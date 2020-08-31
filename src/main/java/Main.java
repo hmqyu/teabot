@@ -146,6 +146,8 @@ public class Main extends ListenerAdapter {
 //        event.getChannel().sendMessage(image.build()).queue();
 //    }
 
+
+    // runs the rock-paper scissors game
     public void rockPaperScissors() {
         if (event.getMessage().getAuthor().getId().equals(RPSPlayerID)) {
             finishRockPaperScissors();
@@ -154,7 +156,7 @@ public class Main extends ListenerAdapter {
         startRockPaperScissors();
     }
 
-    //runs the rock-paper-scissors game
+    //ask the user for their selection
     public void startRockPaperScissors() {
         if (event.getMessage().getContentRaw().equals("!rps")) {
             event.getChannel().sendMessage("Choose thy weapon:").queue();
@@ -162,18 +164,12 @@ public class Main extends ListenerAdapter {
         }
     }
 
+    //determines the outcome of the rock paper scissors game
     public void finishRockPaperScissors() {
         RockPaperScissors RPS = new RockPaperScissors(event.getMessage().getContentRaw());
-        int result = RPS.getOutcome();
-        if (result == 0) {
-            event.getChannel().sendMessage("Winner Winner Chicken Dinner!").queue();
-        } else if (result == 1) {
-            event.getChannel().sendMessage("Draw, worthy battle.").queue();
-        } else if (result == 2) {
-            event.getChannel().sendMessage("Shame.").queue();
-        } else {
-            event.getChannel().sendMessage("Error: Could not compute the outcome.").queue();
-        }
+        event.getChannel().sendMessage("teabot has prepped his " + RPS.getBotSelection() + ".").queue();
+        String result = RPS.getOutcome();
+        event.getChannel().sendMessage(result).queue();
         RPSPlayerID = "";
     }
 }

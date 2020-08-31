@@ -42,34 +42,34 @@ public class RockPaperScissors {
 
     }
 
-    // determine winner of the rock-paper-scissors game (0 = win, 1 = tie, 2 = lose)
-    public int getOutcome() {
+    // determine winner of the rock-paper-scissors game
+    public String getOutcome() {
 
-        if (getUserSelection() == "rock") {
-            if (getBotSelection() == "rock") {
-                return 1;
-            } else if (getBotSelection() == "paper") {
-                return 2;
-            } else {
-                return 0;
+        if (getUserSelection().equals("rock")) {
+            if (getBotSelection().equals("rock")) {
+                return "Draw, worthy battle.";
+            } else if (getBotSelection().equals("paper")) {
+                return "Shame.";
+            } else if (getBotSelection().equals("scissors")) {
+                return "Winner Winner Chicken Dinner!";
             }
-        } else if (getUserSelection() == "paper") {
-            if (getBotSelection() == "rock") {
-                return 0;
-            } else if (getBotSelection() == "paper") {
-                return 1;
-            } else {
-                return 2;
+        } else if (getUserSelection().equals("paper")) {
+            if (getBotSelection().equals("rock")) {
+                return "Winner Winner Chicken Dinner!";
+            } else if (getBotSelection().equals("paper")) {
+                return "Draw, worthy battle.";
+            } else if (getBotSelection().equals("scissors")) {
+                return "Shame.";
             }
-        } else {
-            if (getBotSelection() == "rock") {
-                return 2;
-            } else if (getBotSelection() == "paper") {
-                return 0;
-            } else {
-                return 1;
+        } else if (getUserSelection().equals("scissors")) {
+            if (getBotSelection().equals("rock")) {
+                return "Shame.";
+            } else if (getBotSelection().equals("paper")) {
+                return "Winner Winner Chicken Dinner!";
+            } else if (getBotSelection().equals("scissors")) {
+                return "Draw, worthy battle.";
             }
         }
-
+        return "Error: Could not compute the outcome.";
     }
  }
