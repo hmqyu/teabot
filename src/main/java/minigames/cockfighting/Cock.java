@@ -3,6 +3,7 @@ package minigames.cockfighting;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Cock {
+    private String ownerID;                      // discord ID of the chicken's owner
     private int height;                          // height of chicken in inches
     private int weight;                          // weight of chicken in pounds
     private String colour;                       // colour of the chicken
@@ -26,7 +27,9 @@ public class Cock {
         this.level = new Level();
     }
 
-    public Cock(int height, int weight, String colour, int health, int attack, int defense, int speed, Level level) {
+    public Cock(String ownerID, int height, int weight, String colour,
+                int health, int attack, int defense, int speed, Level level) {
+        this.ownerID = ownerID;
         this.height = height;
         this.weight = weight;
         this.colour = colour;
@@ -35,6 +38,14 @@ public class Cock {
         this.defense = defense;
         this.speed = speed;
         this.level = level;
+    }
+
+    public String getOwnerID() {
+        return ownerID;
+    }
+
+    public void setOwnerID(String ownerID) {
+        this.ownerID = ownerID;
     }
 
     public int getHeight() {

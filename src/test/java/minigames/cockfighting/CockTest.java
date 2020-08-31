@@ -7,6 +7,25 @@ public class CockTest {
     private Cock cock = new Cock();
 
     @Test
+    public void testConstructor() {
+        assertTrue(cock.getHeight() >= 1);
+        assertTrue(cock.getWeight() >= 1);
+        assertTrue(cock.getAttack() >= 1);
+        assertTrue(cock.getDefense() >= 1);
+        assertTrue(cock.getSpeed() >= 1);
+
+        assertNull(cock.getOwnerID());
+        assertTrue(cock.getHeight() <= 27);
+        assertTrue(cock.getWeight() <= 6);
+        System.out.println(cock.getColour());
+        assertNotNull(cock.getColour());
+        assertTrue(cock.getAttack() <= 5);
+        assertTrue(cock.getDefense() <= 5);
+        assertTrue(cock.getSpeed() <= 5);
+        assertNotNull(cock.getLevel());
+    }
+
+    @Test
     public void testHealth() {
         assertEquals(100, cock.getHealth());
         cock.loseHealth(25);
