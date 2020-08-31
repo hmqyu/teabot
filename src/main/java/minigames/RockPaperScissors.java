@@ -16,7 +16,7 @@ public class RockPaperScissors {
     }
 
     public void setUserSelection(String userInput) {
-        userSelection = userInput;
+        userSelection = userInput.toLowerCase();
 
     }
 
@@ -30,8 +30,7 @@ public class RockPaperScissors {
     }
 
     public String getBotSelection() {
-
-        if(generateBotSelection() == 0) {
+        if (generateBotSelection() == 0) {
             botSelection = ROCK;
         } else if (generateBotSelection() == 1) {
             botSelection = PAPER;
@@ -54,18 +53,18 @@ public class RockPaperScissors {
             } else {
                 return 0;
             }
-        } else if(getUserSelection() == "paper") {
-            if(getBotSelection() == "rock") {
+        } else if (getUserSelection() == "paper") {
+            if (getBotSelection() == "rock") {
                 return 0;
-            } else if(getBotSelection() == "paper") {
+            } else if (getBotSelection() == "paper") {
                 return 1;
             } else {
                 return 2;
             }
         } else {
-            if(getBotSelection() == "rock") {
+            if (getBotSelection() == "rock") {
                 return 2;
-            } else if(getBotSelection() == "paper") {
+            } else if (getBotSelection() == "paper") {
                 return 0;
             } else {
                 return 1;

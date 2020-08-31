@@ -72,6 +72,8 @@ public class Cock {
         this.colour = colour;
     }
 
+    // decreases the health of the chicken by the given amount
+    // if chicken health reaches 0 or less, the chicken dies
     public void loseHealth(int damage) {
         this.health -= damage;
         if (this.health <= 0) {
@@ -80,6 +82,7 @@ public class Cock {
         }
     }
 
+    // restores the chicken back to max health
     public void restoreHealth() {
         this.health = MAX_HEALTH;
         this.isAlive = true;
@@ -125,6 +128,8 @@ public class Cock {
         this.speed = speed;
     }
 
+    // chicken gains a certain amount of exp
+    // if the chicken levels up, it gains a random amount of stat between 0 and 2
     public void gainExp() {
         if (this.level.gainExp()) {
             attack += ThreadLocalRandom.current().nextInt(0, 2 + 1);

@@ -10,6 +10,7 @@ import javax.security.auth.login.LoginException;
 public class Main extends ListenerAdapter {
     private MessageReceivedEvent event;
     private int ikuMessageCount = 0;
+    private String RPSPlayerID = "";
 
     public static void main(String[] args) throws LoginException {
         JDABuilder builder = new JDABuilder(AccountType.BOT);
@@ -51,7 +52,7 @@ public class Main extends ListenerAdapter {
 
     // used to run all the games
     public void games() {
-        RockPaperScissors();
+        rockPaperScissors();
     }
 
     // send the pain image after a user types "pain."
@@ -145,28 +146,34 @@ public class Main extends ListenerAdapter {
 //        event.getChannel().sendMessage(image.build()).queue();
 //    }
 
-    //runs the rock-paper-scissors game
-    public void RockPaperScissors() {
-        String userInput;
-        String player;
-        int result;
-        RockPaperScissors RPS;
-        if (event.getMessage().getContentRaw().equals("!rps")) {
-            player = event.getMessage().getAuthor().getId();
-            event.getChannel().sendMessage("Choose thy weapon:").queue();
-            if (event.getAuthor().getId().equals(player)) {
-                userInput = event.getMessage().getContentRaw();
-                RPS = new RockPaperScissors(userInput);
-                RPS.setUserSelection(userInput);
-                result = RPS.getOutcome();
-                if (result == 0) {
-                    event.getChannel().sendMessage("Winner Winner Chicken Dinner!").queue();
-                } else if(result == 1) {
-                    event.getChannel().sendMessage("Draw, worthy battle.").queue();
-                } else {
-                    event.getChannel().sendMessage("Shame.").queue();
-                }
-            }
+    public void rockPaperScissors() {
+        if (event.getMessage().getAuthor().getId().equals(RPSPlayerID)) {
+            finishRockPaperScissors();
+            return;
         }
+        startRockPaperScissors();
+    }
+
+    //runs the rock-paper-scissors game
+    public void startRockPaperScissors() {
+        if (event.getMessage().getContentRaw().equals("!rps")) {
+            event.getChannel().sendMessage("Choose thy weapon:").queue();
+            RPSPlayerID = event.getMessage().getAuthor().getId();
+        }
+    }
+
+    public void finishRockPaperScissors() {
+        RockPaperScissors RPS = new RockPaperScissors(event.getMessage().getContentRaw());
+        int result = RPS.getOutcome();
+        if (result == 0) {
+            event.getChannel().sendMessage("Winner Winner Chicken Dinner!").queue();
+        } else if (result == 1) {
+            event.getChannel().sendMessage("Draw, worthy battle.").queue();
+        } else if (result == 2) {
+            event.getChannel().sendMessage("Shame.").queue();
+        } else {
+            event.getChannel().sendMessage("Error: Could not compute the outcome.").queue();
+        }
+        RPSPlayerID = "";
     }
 }

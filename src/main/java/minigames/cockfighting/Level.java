@@ -6,7 +6,7 @@ public class Level {
     private static final int MIN_EXP_PER_WIN = 1;   // minimum exp gained from a fight
     private int level;                              // level of the chicken
     private int exp;                                // current exp
-    private int expPerWin;                     // exp gained per won fight
+    private int expPerWin;                          // exp gained per won fight
 
     public Level() {
         this.level = 1;
@@ -20,6 +20,9 @@ public class Level {
         this.expPerWin = expPerWin;
     }
 
+    // level increases by 1
+    // exp per win gets decreased by 1 per level up
+    // but exp per win cannot be less than 1
     public void levelUp() {
         level++;
         if (expPerWin > MIN_EXP_PER_WIN) {
@@ -35,6 +38,9 @@ public class Level {
         this.level = level;
     }
 
+    // gains exp
+    // if the exp reaches 100 or more, the level increases and returns true, exp then gets reduced by 100
+    // else returns false
     public boolean gainExp() {
         exp += expPerWin;
         if (exp >= EXP_PER_LEVEL) {

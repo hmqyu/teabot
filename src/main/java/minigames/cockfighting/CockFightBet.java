@@ -1,5 +1,4 @@
 package minigames.cockfighting;
 
-public class CockFightGame {
-
+public class CockFightBet {
 }
