@@ -11,6 +11,7 @@ people, and more.
 
 ### some future functionalities
 - gambling with bot-based currency
+- cock-fighting with personal chickens
 
 ### credit
 helen and her slave (harvir)
