@@ -7,6 +7,8 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import javax.security.auth.login.LoginException;
 
+import static minigames.cockfighting.CockFightBet.cockfight;
+
 public class Main extends ListenerAdapter {
     private MessageReceivedEvent event;
     private int ikuMessageCount = 0;
@@ -14,7 +16,7 @@ public class Main extends ListenerAdapter {
 
     public static void main(String[] args) throws LoginException {
         JDABuilder builder = new JDABuilder(AccountType.BOT);
-        String token = "";
+        String token = "NzQ5NzgwNzAzOTQ3OTE1Mzc1.X0w9sg.-7gEh4qPhPb98fYPr-2IhsFXkp4";
         builder.setToken(token);
         builder.addEventListener(new Main());
         builder.buildAsync();
@@ -36,9 +38,9 @@ public class Main extends ListenerAdapter {
 
         this.event = event;
 
-        games();
         botResponseMessages();
         specificUserMessages();
+        games();
     }
 
     // the bot responds to certain phrases sent in the channel, if possible
@@ -48,11 +50,6 @@ public class Main extends ListenerAdapter {
         angryAtBot();
         botAcceptsApologies();
         botGreetings();
-    }
-
-    // used to run all the games
-    public void games() {
-        rockPaperScissors();
     }
 
     // send the pain image after a user types "pain."
@@ -146,6 +143,11 @@ public class Main extends ListenerAdapter {
 //        event.getChannel().sendMessage(image.build()).queue();
 //    }
 
+    // used to run all the games
+    public void games() {
+        rockPaperScissors();
+        cockFightBet();
+    }
 
     // runs the rock-paper scissors game
     public void rockPaperScissors() {
@@ -156,7 +158,7 @@ public class Main extends ListenerAdapter {
         startRockPaperScissors();
     }
 
-    //ask the user for their selection
+    // ask the user for their selection
     public void startRockPaperScissors() {
         if (event.getMessage().getContentRaw().equals("!rps")) {
             event.getChannel().sendMessage("Choose thy weapon:").queue();
@@ -164,12 +166,18 @@ public class Main extends ListenerAdapter {
         }
     }
 
-    //determines the outcome of the rock paper scissors game
+    // determines the outcome of the rock paper scissors game
     public void finishRockPaperScissors() {
         RockPaperScissors RPS = new RockPaperScissors(event.getMessage().getContentRaw());
         event.getChannel().sendMessage("teabot has prepped his " + RPS.getBotSelection() + ".").queue();
         String result = RPS.getOutcome();
         event.getChannel().sendMessage(result).queue();
         RPSPlayerID = "";
+    }
+
+    public void cockFightBet() {
+        if (event.getMessage().getContentRaw().equals("!cockfight")) {
+            event.getChannel().sendMessage(cockfight()).queue();
+        }
     }
 }
