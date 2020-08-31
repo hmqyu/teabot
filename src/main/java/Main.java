@@ -1,3 +1,4 @@
+import minigames.RockPaperScissors;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.events.ReadyEvent;
@@ -34,6 +35,7 @@ public class Main extends ListenerAdapter {
 
         this.event = event;
 
+        games();
         botResponseMessages();
         specificUserMessages();
     }
@@ -45,6 +47,11 @@ public class Main extends ListenerAdapter {
         angryAtBot();
         botAcceptsApologies();
         botGreetings();
+    }
+
+    // used to run all the games
+    public void games() {
+        RockPaperScissors();
     }
 
     // send the pain image after a user types "pain."
@@ -137,4 +144,29 @@ public class Main extends ListenerAdapter {
 //        image.setThumbnail("https://i.kym-cdn.com/photos/images/newsfeed/001/856/089/47d.png");
 //        event.getChannel().sendMessage(image.build()).queue();
 //    }
+
+    //runs the rock-paper-scissors game
+    public void RockPaperScissors() {
+        String userInput;
+        String player;
+        int result;
+        RockPaperScissors RPS;
+        if (event.getMessage().getContentRaw().equals("!rps")) {
+            player = event.getMessage().getAuthor().getId();
+            event.getChannel().sendMessage("Choose thy weapon:").queue();
+            if (event.getAuthor().getId().equals(player)) {
+                userInput = event.getMessage().getContentRaw();
+                RPS = new RockPaperScissors(userInput);
+                RPS.setUserSelection(userInput);
+                result = RPS.getOutcome();
+                if (result == 0) {
+                    event.getChannel().sendMessage("Winner Winner Chicken Dinner!").queue();
+                } else if(result == 1) {
+                    event.getChannel().sendMessage("Draw, worthy battle.").queue();
+                } else {
+                    event.getChannel().sendMessage("Shame.").queue();
+                }
+            }
+        }
+    }
 }

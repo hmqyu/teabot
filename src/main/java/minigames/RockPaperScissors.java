@@ -11,11 +11,12 @@ public class RockPaperScissors {
     Random number = new Random();
 
 
-    public RockPaperScissors() {
-
+    public RockPaperScissors(String userInput) {
+        this.userSelection = userInput;
     }
 
     public void setUserSelection(String userInput) {
+        userSelection = userInput;
 
     }
 
@@ -24,11 +25,11 @@ public class RockPaperScissors {
 
     }
 
-    public void getUserSelection() {
-
+    public String getUserSelection() {
+        return userSelection;
     }
 
-    public void getBotSelection() {
+    public String getBotSelection() {
 
         if(generateBotSelection() == 0) {
             botSelection = ROCK;
@@ -38,5 +39,38 @@ public class RockPaperScissors {
             botSelection = SCISSORS;
         }
 
+        return botSelection;
+
     }
-}
+
+    // determine winner of the rock-paper-scissors game (0 = win, 1 = tie, 2 = lose)
+    public int getOutcome() {
+
+        if (getUserSelection() == "rock") {
+            if (getBotSelection() == "rock") {
+                return 1;
+            } else if (getBotSelection() == "paper") {
+                return 2;
+            } else {
+                return 0;
+            }
+        } else if(getUserSelection() == "paper") {
+            if(getBotSelection() == "rock") {
+                return 0;
+            } else if(getBotSelection() == "paper") {
+                return 1;
+            } else {
+                return 2;
+            }
+        } else {
+            if(getBotSelection() == "rock") {
+                return 2;
+            } else if(getBotSelection() == "paper") {
+                return 0;
+            } else {
+                return 1;
+            }
+        }
+
+    }
+ }
