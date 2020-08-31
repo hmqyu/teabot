@@ -1,5 +1,7 @@
 import net.dv8tion.jda.core.AccountType;
+import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.events.ReadyEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
@@ -12,6 +14,12 @@ public class Main extends ListenerAdapter {
         builder.setToken(token);
         builder.addEventListener(new Main());
         builder.buildAsync();
+    }
+
+    // prints a message to the console on bot startup
+    @Override
+    public void onReady(ReadyEvent event) {
+        System.out.println("HEEN IS SMEGA CUTE uwu");
     }
 
     // where the bot reacts to various events that occur, ie. messages
@@ -29,6 +37,14 @@ public class Main extends ListenerAdapter {
     // the bot responds to certain phrases sent in the channel, if possible
     public void botResponseMessages(MessageReceivedEvent event) {
         goodBot(event);
+        pain(event);
+    }
+
+    // send the pain image after a user types "pain."
+    public void pain(MessageReceivedEvent event) {
+        if (event.getMessage().getContentRaw().equals("pain.")) {
+            event.getChannel().sendMessage("https://i.kym-cdn.com/photos/images/newsfeed/001/856/089/47d.png").queue();
+        }
     }
 
     // bot thanks someone when they say "good bot"
@@ -49,5 +65,19 @@ public class Main extends ListenerAdapter {
             event.getChannel().sendMessage("get a girlfriend dude.").queue();
         }
     }
+
+    // sets the properties of the embedded image (in this case pain.)
+    public void sendEmbeddedImage(MessageReceivedEvent event) {
+        EmbedBuilder image = new EmbedBuilder();
+        image.setThumbnail("https://i.kym-cdn.com/photos/images/newsfeed/001/856/089/47d.png");
+        event.getChannel().sendMessage(image.build()).queue();
+    }
+
+
+
+
+
+
+
 
 }
