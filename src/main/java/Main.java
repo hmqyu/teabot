@@ -1,23 +1,44 @@
+import exceptions.PersistenceException;
 import minigames.RockPaperScissors;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.events.ReadyEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import persistence.DataReader;
+import player.Player;
 
 import javax.security.auth.login.LoginException;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class Main extends ListenerAdapter {
+    public static ArrayList<Player> playerList;
+    private static final String PLAYER_DATA_FILE = "./data/PlayerData.txt";
     private MessageReceivedEvent event;
     private int ikuMessageCount = 0;
     private String RPSPlayerID = "";
 
     public static void main(String[] args) throws LoginException {
+        loadPlayerData();
         JDABuilder builder = new JDABuilder(AccountType.BOT);
-        String token = "";
+        String token = "NzQ5NzgwNzAzOTQ3OTE1Mzc1.X0w9sg.-7gEh4qPhPb98fYPr-2IhsFXkp4";
         builder.setToken(token);
         builder.addEventListener(new Main());
         builder.buildAsync();
+    }
+
+    private static void loadPlayerData() {
+        try {
+            playerList = DataReader.readCollection(new File(PLAYER_DATA_FILE));
+        } catch (IOException e) {
+            System.out.println("No data file found. Creating new data file...");
+            playerList = new ArrayList<>();
+        } catch (PersistenceException e) {
+            System.out.println("Corrupt data file found - new data file must be created. Creating new data file...");
+            playerList = new ArrayList<>();
+        }
     }
 
     // prints a message to the console on bot startup
@@ -36,9 +57,9 @@ public class Main extends ListenerAdapter {
 
         this.event = event;
 
-        games();
         botResponseMessages();
         specificUserMessages();
+        games();
     }
 
     // the bot responds to certain phrases sent in the channel, if possible
@@ -48,11 +69,6 @@ public class Main extends ListenerAdapter {
         angryAtBot();
         botAcceptsApologies();
         botGreetings();
-    }
-
-    // used to run all the games
-    public void games() {
-        rockPaperScissors();
     }
 
     // send the pain image after a user types "pain."
@@ -146,6 +162,11 @@ public class Main extends ListenerAdapter {
 //        event.getChannel().sendMessage(image.build()).queue();
 //    }
 
+    // used to run all the games
+    public void games() {
+        rockPaperScissors();
+        //cockFightBet();
+    }
 
     // runs the rock-paper scissors game
     public void rockPaperScissors() {
@@ -156,7 +177,7 @@ public class Main extends ListenerAdapter {
         startRockPaperScissors();
     }
 
-    //ask the user for their selection
+    // ask the user for their selection
     public void startRockPaperScissors() {
         if (event.getMessage().getContentRaw().equals("!rps")) {
             event.getChannel().sendMessage("Choose thy weapon:").queue();
@@ -164,7 +185,7 @@ public class Main extends ListenerAdapter {
         }
     }
 
-    //determines the outcome of the rock paper scissors game
+    // determines the outcome of the rock paper scissors game
     public void finishRockPaperScissors() {
         RockPaperScissors RPS = new RockPaperScissors(event.getMessage().getContentRaw());
         event.getChannel().sendMessage("teabot has prepped his " + RPS.getBotSelection() + ".").queue();
@@ -172,4 +193,11 @@ public class Main extends ListenerAdapter {
         event.getChannel().sendMessage(result).queue();
         RPSPlayerID = "";
     }
+
+//    public void cockFightBet() {
+//        if (event.getMessage().getContentRaw().equals("!cockfight")) {
+//            event.getMessage().getAuthor().getId();
+//            event.getChannel().sendMessage(cockfight()).queue();
+//        }
+//    }
 }
