@@ -16,13 +16,17 @@ public class RockPaperScissors {
     }
 
     public void setUserSelection(String userInput) {
-        userSelection = userInput.toLowerCase();
+        userSelection = userInput;
 
     }
 
     public int generateBotSelection() {
         return number.nextInt(2);
 
+    }
+
+    public void setBotSelection(String botChoice) {
+        botSelection = botChoice;
     }
 
     public String getUserSelection() {
@@ -37,36 +41,34 @@ public class RockPaperScissors {
         } else {
             botSelection = SCISSORS;
         }
-
         return botSelection;
-
     }
 
     // determine winner of the rock-paper-scissors game
     public String getOutcome() {
 
-        if (getUserSelection().equals("rock")) {
-            if (getBotSelection().equals("rock")) {
+        if (userSelection.equals(ROCK)) {
+            if (botSelection.equals(ROCK)) {
                 return "Draw, worthy battle.";
-            } else if (getBotSelection().equals("paper")) {
+            } else if (botSelection.equals(PAPER)) {
                 return "Shame.";
-            } else if (getBotSelection().equals("scissors")) {
+            } else if (botSelection.equals(SCISSORS)) {
                 return "Winner Winner Chicken Dinner!";
             }
-        } else if (getUserSelection().equals("paper")) {
-            if (getBotSelection().equals("rock")) {
+        } else if (userSelection.equals(PAPER)) {
+            if (botSelection.equals(ROCK)) {
                 return "Winner Winner Chicken Dinner!";
-            } else if (getBotSelection().equals("paper")) {
+            } else if (botSelection.equals(PAPER)) {
                 return "Draw, worthy battle.";
-            } else if (getBotSelection().equals("scissors")) {
+            } else if (botSelection.equals(SCISSORS)) {
                 return "Shame.";
             }
-        } else if (getUserSelection().equals("scissors")) {
-            if (getBotSelection().equals("rock")) {
+        } else if (userSelection.equals(SCISSORS)) {
+            if (botSelection.equals(ROCK)) {
                 return "Shame.";
-            } else if (getBotSelection().equals("paper")) {
+            } else if (botSelection.equals(PAPER)) {
                 return "Winner Winner Chicken Dinner!";
-            } else if (getBotSelection().equals("scissors")) {
+            } else if (botSelection.equals(SCISSORS)) {
                 return "Draw, worthy battle.";
             }
         }
