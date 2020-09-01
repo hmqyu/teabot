@@ -1,22 +1,17 @@
 package minigames.cockfighting;
 
 public class Chicken {
-    private String ownerID;
     private int winRate;
     private int wins;
 
-    public Chicken(String ownerID) {
-        this.ownerID = ownerID;
+    public Chicken() {
         this.winRate = 45;
         this.wins = 0;
     }
 
-    public String getOwnerID() {
-        return ownerID;
-    }
-
-    public void setOwnerID(String ownerID) {
-        this.ownerID = ownerID;
+    public Chicken(int winRate, int wins) {
+        this.winRate = winRate;
+        this.wins = wins;
     }
 
     public void increaseWinRate() {

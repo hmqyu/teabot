@@ -15,6 +15,13 @@ public class Player {
         this.money = new Money();
     }
 
+    public Player(String id, Money money, ArrayList<Chicken> chickens) {
+        this.id = id;
+        this.money = new Money();
+        this.currentChicken = null;
+        this.chickens = chickens;
+    }
+
     public String getId() {
         return id;
     }

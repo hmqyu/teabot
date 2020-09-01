@@ -10,6 +10,10 @@ public class Money {
         this.dollars = 100;
     }
 
+    public Money(int dollars) {
+        this.dollars = dollars;
+    }
+
     public void addDollars(int dollars) {
         this.dollars += dollars;
     }

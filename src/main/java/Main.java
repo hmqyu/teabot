@@ -1,25 +1,44 @@
+import exceptions.PersistenceException;
 import minigames.RockPaperScissors;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.events.ReadyEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import persistence.DataReader;
+import player.Player;
 
 import javax.security.auth.login.LoginException;
-
-import static minigames.cockfighting.CockFightBet.cockfight;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class Main extends ListenerAdapter {
+    public static ArrayList<Player> playerList;
+    private static final String PLAYER_DATA_FILE = "./data/PlayerData.txt";
     private MessageReceivedEvent event;
     private int ikuMessageCount = 0;
     private String RPSPlayerID = "";
 
     public static void main(String[] args) throws LoginException {
+        loadPlayerData();
         JDABuilder builder = new JDABuilder(AccountType.BOT);
         String token = "NzQ5NzgwNzAzOTQ3OTE1Mzc1.X0w9sg.-7gEh4qPhPb98fYPr-2IhsFXkp4";
         builder.setToken(token);
         builder.addEventListener(new Main());
         builder.buildAsync();
+    }
+
+    private static void loadPlayerData() {
+        try {
+            playerList = DataReader.readCollection(new File(PLAYER_DATA_FILE));
+        } catch (IOException e) {
+            System.out.println("No data file found. Creating new data file...");
+            playerList = new ArrayList<>();
+        } catch (PersistenceException e) {
+            System.out.println("Corrupt data file found - new data file must be created. Creating new data file...");
+            playerList = new ArrayList<>();
+        }
     }
 
     // prints a message to the console on bot startup
@@ -146,7 +165,7 @@ public class Main extends ListenerAdapter {
     // used to run all the games
     public void games() {
         rockPaperScissors();
-        cockFightBet();
+        //cockFightBet();
     }
 
     // runs the rock-paper scissors game
@@ -175,9 +194,10 @@ public class Main extends ListenerAdapter {
         RPSPlayerID = "";
     }
 
-    public void cockFightBet() {
-        if (event.getMessage().getContentRaw().equals("!cockfight")) {
-            event.getChannel().sendMessage(cockfight()).queue();
-        }
-    }
+//    public void cockFightBet() {
+//        if (event.getMessage().getContentRaw().equals("!cockfight")) {
+//            event.getMessage().getAuthor().getId();
+//            event.getChannel().sendMessage(cockfight()).queue();
+//        }
+//    }
 }
