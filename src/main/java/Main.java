@@ -1,20 +1,28 @@
 import exceptions.PersistenceException;
 import minigames.RockPaperScissors;
+import minigames.cockfighting.Chicken;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.events.ReadyEvent;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import persistence.DataReader;
+import persistence.DataWriter;
 import player.Player;
+import player.PlayerList;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
+import static minigames.cockfighting.CockFightBet.cockfight;
+
 public class Main extends ListenerAdapter {
-    public static ArrayList<Player> playerList;
+    private static PlayerList playerList;
+    private static ArrayList<Player> players;
     private static final String PLAYER_DATA_FILE = "./data/PlayerData.txt";
     private MessageReceivedEvent event;
     private int ikuMessageCount = 0;
@@ -23,7 +31,7 @@ public class Main extends ListenerAdapter {
     public static void main(String[] args) throws LoginException {
         loadPlayerData();
         JDABuilder builder = new JDABuilder(AccountType.BOT);
-        String token = "NzQ5NzgwNzAzOTQ3OTE1Mzc1.X0w9sg.-7gEh4qPhPb98fYPr-2IhsFXkp4";
+        String token = "NzQ5NzgwNzAzOTQ3OTE1Mzc1.X0w9sg.UXKByS8waXpS7qpjMEA3Bbr25iE";
         builder.setToken(token);
         builder.addEventListener(new Main());
         builder.buildAsync();
@@ -31,13 +39,14 @@ public class Main extends ListenerAdapter {
 
     private static void loadPlayerData() {
         try {
-            playerList = DataReader.readCollection(new File(PLAYER_DATA_FILE));
+            playerList = DataReader.readPlayerList(new File(PLAYER_DATA_FILE));
+            players = playerList.getPlayers();
         } catch (IOException e) {
             System.out.println("No data file found. Creating new data file...");
-            playerList = new ArrayList<>();
+            playerList = new PlayerList();
         } catch (PersistenceException e) {
             System.out.println("Corrupt data file found - new data file must be created. Creating new data file...");
-            playerList = new ArrayList<>();
+            playerList = new PlayerList();
         }
     }
 
@@ -57,9 +66,25 @@ public class Main extends ListenerAdapter {
 
         this.event = event;
 
+        save();
         botResponseMessages();
         specificUserMessages();
         games();
+    }
+
+    public void save() {
+        if (event.getMessage().getContentRaw().equals("!save")) {
+            try {
+                DataWriter writer = new DataWriter(new File(PLAYER_DATA_FILE));
+                writer.write(playerList);
+                writer.close();
+                event.getChannel().sendMessage("Data saved!").queue();
+            } catch (FileNotFoundException e) {
+                event.getChannel().sendMessage("Save file corrupted - unable to save data.").queue();
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     // the bot responds to certain phrases sent in the channel, if possible
@@ -164,8 +189,28 @@ public class Main extends ListenerAdapter {
 
     // used to run all the games
     public void games() {
+        moneyTransactions();
         rockPaperScissors();
-        //cockFightBet();
+        cockFighting();
+    }
+
+    public void moneyTransactions() {
+        daily();
+        bank();
+    }
+
+    public void daily() {
+        if (event.getMessage().getContentRaw().equals("!daily")) {
+            int dailyFreebie = findPlayer(event.getMessage().getAuthor().getId()).getMoney().dailyFreebie();
+            event.getChannel().sendMessage("You received $" + dailyFreebie + " today!").queue();
+        }
+    }
+
+    public void bank() {
+        if (event.getMessage().getContentRaw().equals("!bank")) {
+            Player currentPlayer = findPlayer(event.getMessage().getAuthor().getId());
+            event.getChannel().sendMessage("You have $" + currentPlayer.getMoney().getDollars() + ".").queue();
+        }
     }
 
     // runs the rock-paper scissors game
@@ -194,10 +239,53 @@ public class Main extends ListenerAdapter {
         RPSPlayerID = "";
     }
 
-//    public void cockFightBet() {
-//        if (event.getMessage().getContentRaw().equals("!cockfight")) {
-//            event.getMessage().getAuthor().getId();
-//            event.getChannel().sendMessage(cockfight()).queue();
-//        }
-//    }
+    public void cockFighting() {
+        buyChicken();
+        cockFightBet();
+    }
+
+    public void buyChicken() {
+        if (event.getMessage().getContentRaw().equals("!buy chicken")) {
+            Player currentPlayer = findPlayer(event.getMessage().getAuthor().getId());
+            if (currentPlayer.removeMoney(100)) {
+                currentPlayer.addChicken(new Chicken());
+                event.getChannel().sendMessage("You bought a chicken for $100! :rooster:").queue();
+            } else {
+                event.getChannel().sendMessage("You don't have enough for a chicken...").queue();
+            }
+        }
+    }
+
+    public void cockFightBet() {
+        if (event.getMessage().getContentRaw().equals("!cockfight")) {
+            Player player = findPlayer(event.getMessage().getAuthor().getId());
+            Chicken chicken = player.getCurrentChicken();
+            if (chicken != null) {
+                boolean isAlive = cockfight(findPlayer(event.getMessage().getAuthor().getId()).getCurrentChicken());
+                if (isAlive) {
+                    event.getChannel().sendMessage("Your lil chicken won the fight! :rooster:").queue();
+                } else {
+                    player.setCurrentChicken(null);
+                    event.getChannel().sendMessage(":skull_crossbones: Your chicken died... :skull_crossbones:")
+                            .queue();
+                }
+            } else {
+                event.getChannel().sendMessage("You have no chicken ready to fight. " +
+                        "Assign a chicken with \"!assign chicken\", " +
+                        "or buy one with \"!buy chicken\".").queue();
+            }
+        }
+    }
+
+    private Player findPlayer(String id) {
+        for (Player player : players) {
+            if (player.getId().equals(id)) {
+                return player;
+            }
+        }
+
+        Player newPlayer = new Player(id);
+        players.add(newPlayer);
+        return newPlayer;
+    }
 }

@@ -14,14 +14,14 @@ public class CockFightBet {
     }
 
     // chicken fights against a random chicken
-    public static String cockfight(Chicken chicken) {
+    public static boolean cockfight(Chicken chicken) {
         Random random = new Random();
         int chickenWinRate = chicken.getWinRate();
         if (chickenWinRate <= random.nextInt(100)) {
             chicken.increaseWinRate();
             chicken.increaseWins();
-            return "Your lil chicken won the fight! :rooster:";
+            return true;
         }
-        return ":skull_crossbones: Your chicken died... :skull_crossbones:";
+        return false;
     }
 }

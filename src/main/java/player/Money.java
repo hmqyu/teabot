@@ -18,8 +18,12 @@ public class Money {
         this.dollars += dollars;
     }
 
-    public void removeDollars(int dollars) {
+    public boolean removeDollars(int dollars) {
+        if (this.dollars < dollars) {
+            return false;
+        }
         this.dollars -= dollars;
+        return true;
     }
 
     public int getDollars() {
@@ -30,8 +34,10 @@ public class Money {
         this.dollars = dollars;
     }
 
-    public void dailyFreebie() {
-        this.dollars += ThreadLocalRandom.current().nextInt(200, dailyFreebieAmount);
+    public int dailyFreebie() {
+        int dailyFreebie = ThreadLocalRandom.current().nextInt(200, dailyFreebieAmount);
+        this.dollars += dailyFreebie;
+        return dailyFreebie;
     }
 
     public int getDailyFreebieAmount() {
