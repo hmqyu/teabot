@@ -1,4 +1,5 @@
 import exceptions.PersistenceException;
+import minigames.GuessTheNumber;
 import minigames.RockPaperScissors;
 import minigames.cockfighting.Chicken;
 import net.dv8tion.jda.core.AccountType;
@@ -24,14 +25,14 @@ public class Main extends ListenerAdapter {
     private static PlayerList playerList;
     private static ArrayList<Player> players;
     private static final String PLAYER_DATA_FILE = "./data/PlayerData.txt";
-    private MessageReceivedEvent event;
+    private MessageReceivedEvent eveSnt;
     private int ikuMessageCount = 0;
     private String RPSPlayerID = "";
 
     public static void main(String[] args) throws LoginException {
         loadPlayerData();
         JDABuilder builder = new JDABuilder(AccountType.BOT);
-        String token = "NzQ5NzgwNzAzOTQ3OTE1Mzc1.X0w9sg.UXKByS8waXpS7qpjMEA3Bbr25iE";
+        String token = "";
         builder.setToken(token);
         builder.addEventListener(new Main());
         builder.buildAsync();
