@@ -5,7 +5,7 @@ public class Chicken {
     private int wins;
 
     public Chicken() {
-        this.winRate = 45;
+        this.winRate = 55;
         this.wins = 0;
     }
 
@@ -27,7 +27,7 @@ public class Chicken {
     }
 
     public void increaseWins() {
-        winRate++;
+        wins++;
     }
 
     public int getWins() {

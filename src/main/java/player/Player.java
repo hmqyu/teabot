@@ -21,7 +21,7 @@ public class Player implements Data {
 
     public Player(String id, ArrayList<Chicken> chickens, Money money) {
         this.id = id;
-        this.money = new Money();
+        this.money = money;
         this.currentChicken = null;
         this.chickens = chickens;
     }
@@ -69,6 +69,17 @@ public class Player implements Data {
         currentChicken = chicken;
     }
 
+    public void removeChicken(Chicken chicken) {
+        this.chickens.remove(chicken);
+        if (currentChicken.equals(chicken)) {
+            currentChicken = null;
+        }
+    }
+
+    public Chicken getSingleChicken(int index) {
+        return chickens.get(index - 1);
+    }
+
     public ArrayList<Chicken> getChickens() {
         return chickens;
     }
@@ -81,9 +92,9 @@ public class Player implements Data {
     public void save(PrintWriter printWriter) {
         printWriter.print(id);
         printWriter.print(DataReader.PLAYER_DELIMITER);
-        printWriter.print(money.getDollars());
-        printWriter.print(DataReader.PLAYER_DELIMITER);
         saveChickens(printWriter);
+        printWriter.print(DataReader.PLAYER_DELIMITER);
+        printWriter.println(money.getDollars());
     }
 
     private void saveChickens(PrintWriter printWriter) {
@@ -92,9 +103,15 @@ public class Player implements Data {
         }
         int count;
         for (count = 0; count < chickens.size() - 1; count++) {
-            printWriter.print(chickens.get(count));
-            printWriter.print(DataReader.CHICKEN_DELIMITER);
+            saveSingleChicken(printWriter, chickens.get(count));
+            printWriter.print(DataReader.CHICKEN_LIST_DELIMITER);
         }
-        printWriter.print(chickens.get(count));
+        saveSingleChicken(printWriter, chickens.get(count));
+    }
+
+    private void saveSingleChicken(PrintWriter printWriter, Chicken chicken) {
+        printWriter.print(chicken.getWinRate());
+        printWriter.print(DataReader.CHICKEN_DELIMITER);
+        printWriter.print(chicken.getWins());
     }
 }
