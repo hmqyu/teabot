@@ -4,10 +4,10 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Money {
     private int dollars;
-    private int dailyFreebieAmount = 500;
+    private int dailyFreebieAmount = 1000;
 
     public Money() {
-        this.dollars = 100;
+        this.dollars = 1000;
     }
 
     public Money(int dollars) {

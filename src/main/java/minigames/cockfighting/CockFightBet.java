@@ -17,7 +17,7 @@ public class CockFightBet {
     public static boolean cockfight(Chicken chicken) {
         Random random = new Random();
         int chickenWinRate = chicken.getWinRate();
-        if (chickenWinRate <= random.nextInt(100)) {
+        if (chickenWinRate >= random.nextInt(100)) {
             chicken.increaseWinRate();
             chicken.increaseWins();
             return true;

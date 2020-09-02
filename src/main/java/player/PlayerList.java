@@ -20,6 +20,10 @@ public class PlayerList implements Data {
         players.add(player);
     }
 
+    public Player getPlayer(int position) {
+        return players.get(position);
+    }
+
     public ArrayList<Player> getPlayers() {
         return players;
     }

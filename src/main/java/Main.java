@@ -25,7 +25,7 @@ public class Main extends ListenerAdapter {
     private static PlayerList playerList;
     private static ArrayList<Player> players;
     private static final String PLAYER_DATA_FILE = "./data/PlayerData.txt";
-    private MessageReceivedEvent eveSnt;
+    private MessageReceivedEvent event;
     private int ikuMessageCount = 0;
     private String RPSPlayerID = "";
 
@@ -42,6 +42,7 @@ public class Main extends ListenerAdapter {
         try {
             playerList = DataReader.readPlayerList(new File(PLAYER_DATA_FILE));
             players = playerList.getPlayers();
+            System.out.println("Data file successfully loaded.");
         } catch (IOException e) {
             System.out.println("No data file found. Creating new data file...");
             playerList = new PlayerList();
@@ -60,6 +61,10 @@ public class Main extends ListenerAdapter {
     // where the bot reacts to various events that occur, ie. messages
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
+        if(event.getAuthor().isBot()) {
+            return;
+        }
+
         System.out.println("Message received from " +
                 event.getAuthor().getName() + " " +
                 event.getAuthor().getId() + ": " +
@@ -67,10 +72,26 @@ public class Main extends ListenerAdapter {
 
         this.event = event;
 
+        help();
         save();
         botResponseMessages();
         specificUserMessages();
         games();
+    }
+
+    public void help() {
+        if (event.getMessage().getContentRaw().equals("!help")) {
+            event.getChannel().sendMessage("**!daily**: gives you a daily amount of money. [disabled]\n" +
+                    "**!bank**: checks how much money you have.\n" +
+                    "**!cockfight #**: bet the given amount of money on your chicken against a random chicken. " +
+                    "if you win, you gain your money back x2. if you lose, you lose your money and your chicken.\n" +
+                    "**!buy chicken**: buys a chicken for $100, and assigns it as your current chicken.\n" +
+                    "**!assign chicken #**: assigns chicken # as your current chicken, " +
+                    "which will fight for you in cockfights.\n" +
+                    "**!display chickens**: displays the chickens that you currently own.\n" +
+                    "**!rps**: play a game of rock-paper-scissors against the bot.\n" +
+                    "**!save**: saves all user information.").queue();
+        }
     }
 
     public void save() {
@@ -121,7 +142,8 @@ public class Main extends ListenerAdapter {
                 userMessage.equals("i hate this bot") ||
                 userMessage.equals("i hate the bot") ||
                 userMessage.equals("the bot sucks") ||
-                userMessage.equals("this bot sucks")) {
+                userMessage.equals("this bot sucks") ||
+                userMessage.equals("bad bot")) {
             event.getChannel().sendMessage("<@" +
                     event.getMessage().getAuthor().getId() +
                     "> fuck you too").queue();
@@ -197,13 +219,44 @@ public class Main extends ListenerAdapter {
 
     public void moneyTransactions() {
         daily();
+        giveMoney();
         bank();
+//        leaderboard();
     }
+
+//    public void leaderboard() {
+//        if (event.getMessage().getContentRaw().equals("!leaderboard")) {
+//            String leaderboard = "";
+//            for (int pos = 0; pos < players.size(); pos++) {
+//                leaderboard += (pos + 1)  + ". ";
+//
+//            }
+//        }
+//    }
 
     public void daily() {
         if (event.getMessage().getContentRaw().equals("!daily")) {
-            int dailyFreebie = findPlayer(event.getMessage().getAuthor().getId()).getMoney().dailyFreebie();
+           int dailyFreebie = findPlayer(event.getMessage().getAuthor().getId()).getMoney().dailyFreebie();
             event.getChannel().sendMessage("You received $" + dailyFreebie + " today!").queue();
+       }
+   }
+
+    public void giveMoney() {
+        if (event.getMessage().getContentRaw().contains("!give") &&
+        event.getMessage().getAuthor().getId().equals("202967660491833345")) {
+            try {
+                int money = Integer.parseInt(event.getMessage().getContentRaw().substring(6, 12));
+                String playerID = event.getMessage().getContentRaw().substring(17);
+                Player chosenPlayer = findPlayer(playerID.substring(0, playerID.length() - 1));
+                chosenPlayer.addMoney(money);
+                event.getChannel().sendMessage("$" + money + " was successfully sent to <@" +
+                        playerID + "!").queue();
+            } catch (NumberFormatException e) {
+                event.getChannel().sendMessage("Invalid amount of money entered.").queue();
+            } catch (StringIndexOutOfBoundsException e) {
+                event.getChannel().sendMessage("Please include the amount of money to give, " +
+                        "and a player ID.").queue();
+            }
         }
     }
 
@@ -242,39 +295,101 @@ public class Main extends ListenerAdapter {
 
     public void cockFighting() {
         buyChicken();
+        assignChicken();
+        displayChickens();
         cockFightBet();
     }
 
     public void buyChicken() {
         if (event.getMessage().getContentRaw().equals("!buy chicken")) {
             Player currentPlayer = findPlayer(event.getMessage().getAuthor().getId());
-            if (currentPlayer.removeMoney(100)) {
+            if (currentPlayer.removeMoney(25)) {
                 currentPlayer.addChicken(new Chicken());
-                event.getChannel().sendMessage("You bought a chicken for $100! :rooster:").queue();
+                event.getChannel().sendMessage("You bought a chicken for $25! :rooster:").queue();
             } else {
                 event.getChannel().sendMessage("You don't have enough for a chicken...").queue();
             }
         }
     }
 
-    public void cockFightBet() {
-        if (event.getMessage().getContentRaw().equals("!cockfight")) {
-            Player player = findPlayer(event.getMessage().getAuthor().getId());
-            Chicken chicken = player.getCurrentChicken();
-            if (chicken != null) {
-                boolean isAlive = cockfight(findPlayer(event.getMessage().getAuthor().getId()).getCurrentChicken());
-                if (isAlive) {
-                    event.getChannel().sendMessage("Your lil chicken won the fight! :rooster:").queue();
-                } else {
-                    player.setCurrentChicken(null);
-                    event.getChannel().sendMessage(":skull_crossbones: Your chicken died... :skull_crossbones:")
-                            .queue();
-                }
-            } else {
-                event.getChannel().sendMessage("You have no chicken ready to fight. " +
-                        "Assign a chicken with \"!assign chicken\", " +
-                        "or buy one with \"!buy chicken\".").queue();
+    public void assignChicken() {
+        if (event.getMessage().getContentRaw().contains("!assign chicken")) {
+            Player currentPlayer = findPlayer(event.getMessage().getAuthor().getId());
+            try {
+                int chickenPos = Integer.parseInt(event.getMessage().getContentRaw().substring(16));
+                Chicken chicken = currentPlayer.getSingleChicken(chickenPos);
+                currentPlayer.setCurrentChicken(chicken);
+                event.getChannel().sendMessage("Successfully assigned chicken " + chickenPos +
+                        " as your current chicken! :rooster:").queue();
+            } catch (StringIndexOutOfBoundsException e) {
+                event.getChannel().sendMessage("Please include the chicken's number when assigning a chicken.")
+                        .queue();
+            } catch (NumberFormatException | IndexOutOfBoundsException e) {
+                event.getChannel().sendMessage("No chicken exists at that position.").queue();
             }
+        }
+    }
+
+    public void displayChickens() {
+        if (event.getMessage().getContentRaw().contains("!display chickens")) {
+            Player currentPlayer = findPlayer(event.getMessage().getAuthor().getId());
+            ArrayList<Chicken> chickens = currentPlayer.getChickens();
+            if (chickens.isEmpty()) {
+                event.getChannel().sendMessage("You have no chickens. " +
+                        "You can buy a chicken with \"!buy chicken\".").queue();
+                return;
+            }
+            StringBuilder message = new StringBuilder();
+            for (int pos = 0; pos < chickens.size(); pos++) {
+                Chicken chicken = chickens.get(pos);
+                message.append("Chicken ").append(pos + 1).append(": ")
+                        .append(chicken.getWins()).append(" wins, ")
+                        .append(chicken.getWinRate()).append("% win rate.\n");
+            }
+            event.getChannel().sendMessage(message.toString()).queue();
+        }
+    }
+
+    public void cockFightBet() {
+        if (event.getMessage().getContentRaw().contains("!cockfight")) {
+            Player player = findPlayer(event.getMessage().getAuthor().getId());
+            try {
+                int bettings = Integer.parseInt(event.getMessage().getContentRaw().substring(11));
+                if (bettings <= player.getMoney().getDollars()) {
+                    Chicken chicken = player.getCurrentChicken();
+                    if (chicken != null) {
+                        boolean isAlive = cockfight(
+                                findPlayer(event.getMessage().getAuthor().getId()).getCurrentChicken());
+                        if (isAlive) {
+                            event.getChannel().sendMessage("Your lil chicken won the fight, " +
+                                    "and made you $" + bettings + " richer! :rooster:").queue();
+                        } else {
+                            player.removeChicken(chicken);
+                            event.getChannel().sendMessage(
+                                    ":skull_crossbones: Your chicken died... :skull_crossbones:").queue();
+                        }
+                        processMoney(player, bettings, isAlive);
+                    } else {
+                        event.getChannel().sendMessage("You have no chicken ready to fight. " +
+                                "Assign a chicken with \"!assign chicken\", " +
+                                "or buy one with \"!buy chicken\".").queue();
+                    }
+                } else {
+                    event.getChannel().sendMessage("You don't have enough money to bet that amount!").queue();
+                }
+            } catch (StringIndexOutOfBoundsException e) {
+                event.getChannel().sendMessage("Please include an amount of money to bet with.").queue();
+            } catch (NumberFormatException e) {
+                event.getChannel().sendMessage("Invalid amount of money entered.").queue();
+            }
+        }
+    }
+
+    private void processMoney(Player player, int money, boolean isWon) {
+        if (isWon) {
+            player.addMoney(money);
+        } else {
+            player.removeMoney(money);
         }
     }
 
