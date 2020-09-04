@@ -9,8 +9,7 @@ public class GuessTheNumber {
     public int end;
     public int numberOfGuesses;
 
-    public GuessTheNumber(int guess,int start,int end) {
-        this.guess = guess;
+    public GuessTheNumber(int start,int end) {
         this.start = start;
         this.end = end;
     }
@@ -56,7 +55,7 @@ public class GuessTheNumber {
         this.value = ThreadLocalRandom.current().nextInt(start,end);
     }
 
-    public String checkGuess() {
+    public String checkGuess(int guess) {
         if (numberOfGuesses > 0) {
             if (guess == value) {
                 return "CHEATER!";

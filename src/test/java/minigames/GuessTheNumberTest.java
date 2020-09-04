@@ -7,67 +7,54 @@ import static org.junit.Assert.assertTrue;
 
 public class GuessTheNumberTest {
 
-    private int value;
-    private int guess;
-    private int start;
-    private int end;
-    private int numberOfGuesses;
     GuessTheNumber game;
 
-    void runBefore() {
-        game = new GuessTheNumber(guess,start,end);
+    @Test
+    public void testGenerateValue() {
+        game =  new GuessTheNumber(0,6);
+        game.generateValue(0,6);
+        assertTrue(game.getValue() >= 0 && game.getValue() <= 6);
     }
 
     @Test
-    void testGenerateValue() {
-        game.generateValue(start,end);
-        assertTrue(value >= start && value <= end);
-    }
-
-    @Test
-    void testCheckGuessWithUpperBound() {
+    public void testCheckGuessWithUpperBound() {
+        game =  new GuessTheNumber(0,6);
         game.setValue(6);
-        game.setGuess(6);
-        game.setBounds(0,6);
         game.setNumberOfGuesses(2);
-        assertEquals("CHEATER!",game.checkGuess());
+        assertEquals("CHEATER!",game.checkGuess(6));
     }
 
     @Test
-    void testCheckGuessWithLowerBound() {
+    public void testCheckGuessWithLowerBound() {
+        game =  new GuessTheNumber(0,2);
         game.setValue(0);
-        game.setGuess(0);
-        game.setBounds(0,2);
         game.setNumberOfGuesses(2);
-        assertEquals("CHEATER!",game.checkGuess());
+        assertEquals("CHEATER!",game.checkGuess(0));
     }
 
     @Test
-    void testCheckGuessWrong() {
+    public void testCheckGuessWrong() {
+        game =  new GuessTheNumber(0,3);
         game.setValue(1);
-        game.setGuess(0);
-        game.setBounds(0,3);
         game.setNumberOfGuesses(3);
-        assertEquals("LOL u suck.",game.checkGuess());
+        assertEquals("LOL u suck.",game.checkGuess(0));
     }
 
     @Test
-    void testCheckGuessOutOfBounds() {
+    public void testCheckGuessOutOfBounds() {
+        game =  new GuessTheNumber(0,3);
         game.setValue(1);
-        game.setGuess(5);
-        game.setBounds(0,3);
         game.setNumberOfGuesses(3);
-        assertEquals("Your guess isn't within the bounds, monkey.",game.checkGuess());
+        assertEquals("Your guess isn't within the bounds, monkey.",game.checkGuess(5));
     }
 
     @Test
-    void testOutOfGuesses() {
+    public void testOutOfGuesses() {
+        game =  new GuessTheNumber(0,3);
         game.setValue(1);
-        game.setGuess(0);
-        game.setBounds(0,3);
         game.setNumberOfGuesses(1);
-        game.checkGuess();
-        assertEquals("No more guesses. Ur bad. :p", game.checkGuess());
+        game.checkGuess(0);
+        assertEquals("No more guesses. Ur bad. :p", game.checkGuess(0));
     }
 
 
