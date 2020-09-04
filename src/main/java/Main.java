@@ -197,7 +197,7 @@ public class Main extends ListenerAdapter {
             if (ikuMessageCount == 5) {
                 ikuMessageCount = 0;
             } else if (ikuMessageCount == 1) {
-                event.getChannel().sendMessage("get a girlfriend dude.").queue();
+                event.getChannel().sendMessage("get a queen, king :crown:").queue();
             }
         }
     }

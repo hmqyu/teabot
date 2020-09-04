@@ -4,7 +4,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 public class Money {
     private int dollars;
-    private int dailyFreebieAmount = 1000;
+    private static final int DAILY_FREEBIE_MIN = 1000;
+    private static final int DAILY_FREEBIE_MAX = 2500;
 
     public Money() {
         this.dollars = 1000;
@@ -35,16 +36,8 @@ public class Money {
     }
 
     public int dailyFreebie() {
-        int dailyFreebie = ThreadLocalRandom.current().nextInt(200, dailyFreebieAmount);
+        int dailyFreebie = ThreadLocalRandom.current().nextInt(DAILY_FREEBIE_MIN, DAILY_FREEBIE_MAX);
         this.dollars += dailyFreebie;
         return dailyFreebie;
-    }
-
-    public int getDailyFreebieAmount() {
-        return dailyFreebieAmount;
-    }
-
-    public void setDailyFreebieAmount(int dailyFreebieAmount) {
-        this.dailyFreebieAmount = dailyFreebieAmount;
     }
 }
