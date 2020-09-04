@@ -1,4 +1,5 @@
 import exceptions.PersistenceException;
+import minigames.GuessTheNumber;
 import minigames.RockPaperScissors;
 import minigames.cockfighting.Chicken;
 import net.dv8tion.jda.core.AccountType;
@@ -27,11 +28,17 @@ public class Main extends ListenerAdapter {
     private MessageReceivedEvent event;
     private int ikuMessageCount = 0;
     private String RPSPlayerID = "";
+    private String GuessPlayerID = "";
+    private int start;
+    private int end;
+    private  int numberOfGuesses;
+    GuessTheNumber Guess;
+    private boolean isWrong = true;
 
     public static void main(String[] args) throws LoginException {
         loadPlayerData();
         JDABuilder builder = new JDABuilder(AccountType.BOT);
-        String token = "NzQ5NzgwNzAzOTQ3OTE1Mzc1.X0w9sg.BAFEkccPJqPteLdJ3VDMkfWDfpM";
+        String token = "";
         builder.setToken(token);
         builder.addEventListener(new Main());
         builder.buildAsync();
@@ -223,15 +230,15 @@ public class Main extends ListenerAdapter {
 //        leaderboard();
     }
 
-    public void leaderboard() {
-        if (event.getMessage().getContentRaw().equals("!leaderboard")) {
-            String leaderboard = "";
-            for (int pos = 0; pos < players.size(); pos++) {
-                leaderboard += (pos + 1)  + ". ";
-
-            }
-        }
-    }
+//    public void leaderboard() {
+//        if (event.getMessage().getContentRaw().equals("!leaderboard")) {
+//            String leaderboard = "";
+//            for (int pos = 0; pos < players.size(); pos++) {
+//                leaderboard += (pos + 1)  + ". ";
+//
+//            }
+//        }
+//    }
 
     public void daily() {
         if (event.getMessage().getContentRaw().equals("!daily")) {
@@ -291,6 +298,62 @@ public class Main extends ListenerAdapter {
         event.getChannel().sendMessage(result).queue();
         RPSPlayerID = "";
     }
+
+    public void GuessTheNumber() {
+        startGuessTheNumber();
+        while (isWrong) {
+            guess1();
+            guess2();
+            guess3();
+        }
+
+    }
+
+    public void startGuessTheNumber() {
+        String range;
+        if (event.getMessage().getContentRaw().equals("!guess")) {
+            GuessPlayerID = event.getMessage().getAuthor().getId();
+            range = event.getMessage().getContentRaw().substring(8);
+            String[] splitRange = range.split(" ");
+            start = Integer.parseInt(splitRange[0]);
+            end = Integer.parseInt(splitRange[1]);
+            Guess = new GuessTheNumber(start,end);
+            event.getChannel().sendMessage("Enter your guess:").queue();
+            numberOfGuesses = 3;
+        }
+    }
+
+
+    public void guess1() {
+        if(numberOfGuesses == 3) {
+            event.getChannel().sendMessage(Guess.checkGuess(Integer.parseInt(event.getMessage().getContentRaw())));
+            if (Guess.checkGuess(Integer.parseInt(event.getMessage().getContentRaw())).equals("CHEATER!")) {
+                isWrong = true;
+            }
+            numberOfGuesses--;
+        }
+    }
+
+    public void guess2() {
+        if(numberOfGuesses == 2) {
+            event.getChannel().sendMessage(Guess.checkGuess(Integer.parseInt(event.getMessage().getContentRaw())));
+            if (Guess.checkGuess(Integer.parseInt(event.getMessage().getContentRaw())).equals("CHEATER!")) {
+                isWrong = true;
+            }
+            numberOfGuesses--;
+        }
+    }
+
+    public void guess3() {
+        if(numberOfGuesses == 1) {
+            event.getChannel().sendMessage(Guess.checkGuess(Integer.parseInt(event.getMessage().getContentRaw())));
+            if (Guess.checkGuess(Integer.parseInt(event.getMessage().getContentRaw())).equals("CHEATER!")) {
+                isWrong = true;
+            }
+            numberOfGuesses--;
+        }
+    }
+
 
     public void cockFighting() {
         buyChicken();
