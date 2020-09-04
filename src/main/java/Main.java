@@ -218,6 +218,7 @@ public class Main extends ListenerAdapter {
 
     // used to run all the games
     public void games() {
+        GuessTheNumber();
         moneyTransactions();
         rockPaperScissors();
         cockFighting();
@@ -311,7 +312,7 @@ public class Main extends ListenerAdapter {
 
     public void startGuessTheNumber() {
         String range;
-        if (event.getMessage().getContentRaw().equals("!guess")) {
+        if (event.getMessage().getContentRaw().contains("!guess")) {
             GuessPlayerID = event.getMessage().getAuthor().getId();
             range = event.getMessage().getContentRaw().substring(8);
             String[] splitRange = range.split(" ");
