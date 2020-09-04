@@ -31,7 +31,7 @@ public class Main extends ListenerAdapter {
     public static void main(String[] args) throws LoginException {
         loadPlayerData();
         JDABuilder builder = new JDABuilder(AccountType.BOT);
-        String token = "NzQ5NzgwNzAzOTQ3OTE1Mzc1.X0w9sg.dGtPGP9i8NjTBeQtXmGZaY98ojU";
+        String token = "NzQ5NzgwNzAzOTQ3OTE1Mzc1.X0w9sg.BAFEkccPJqPteLdJ3VDMkfWDfpM";
         builder.setToken(token);
         builder.addEventListener(new Main());
         builder.buildAsync();
@@ -190,7 +190,7 @@ public class Main extends ListenerAdapter {
             if (ikuMessageCount == 5) {
                 ikuMessageCount = 0;
             } else if (ikuMessageCount == 1) {
-                event.getChannel().sendMessage("get a girlfriend dude.").queue();
+                event.getChannel().sendMessage("get a queen, king :crown:").queue();
             }
         }
     }
@@ -223,15 +223,15 @@ public class Main extends ListenerAdapter {
 //        leaderboard();
     }
 
-//    public void leaderboard() {
-//        if (event.getMessage().getContentRaw().equals("!leaderboard")) {
-//            String leaderboard = "";
-//            for (int pos = 0; pos < players.size(); pos++) {
-//                leaderboard += (pos + 1)  + ". ";
-//
-//            }
-//        }
-//    }
+    public void leaderboard() {
+        if (event.getMessage().getContentRaw().equals("!leaderboard")) {
+            String leaderboard = "";
+            for (int pos = 0; pos < players.size(); pos++) {
+                leaderboard += (pos + 1)  + ". ";
+
+            }
+        }
+    }
 
     public void daily() {
         if (event.getMessage().getContentRaw().equals("!daily")) {
