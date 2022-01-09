@@ -49,7 +49,7 @@ The Teabot can also respond to certain messages with pre-set responses. Here are
 
 <img src="https://cdn.discordapp.com/attachments/749751927604117527/928949911406407710/unknown.png">
 
-The bot is also able to detect messages from specfic users and respond to only their messages as well. In this case, these user-specific messages are for select members of our Tea Party Infinite server. For example, whenever a certain user types anything in chat, the bot responds with `get a girlfrien dude.`
+The bot is also able to detect messages from specfic users and respond to only their messages as well. In this case, these user-specific messages are for select members of our Tea Party Infinite server. For example, whenever a certain user types anything in chat, the bot responds with `get a girlfriend dude.`
 
 You are welcome to install the Teabot in your Discord Server and have all the fun you want!
 
