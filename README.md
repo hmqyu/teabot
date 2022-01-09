@@ -7,7 +7,7 @@
 * [Walkthrough](#walkthrough)
 
 ## Project Description
-The **Teabot** is a Discord bot, specifically meant for the **Tea Party Infinite** server. It is used to play some basic games, such as Rock-Paper-Scissors, as well as other gambling games that are shown belown. There are also some other features and bot responsese that are usd to mess around with certain people, and more.
+The **Teabot** is a Discord bot, specifically meant for the **Tea Party Infinite** server. It is used to play some basic games, such as Rock-Paper-Scissors, as well as other gambling games that are shown belown. There are also some other features and bot responses that are used to mess around with certain people, and more.
 
 ## Setup
 
